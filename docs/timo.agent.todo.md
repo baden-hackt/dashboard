@@ -57,7 +57,7 @@
 
 ---
 
-## TODO 4 — ACTIVE
+## TODO 4 — DONE
 **Goal:** Implement `components/ShelfStatus.tsx`
 **Tasks:**
 - Mark as `"use client"`
@@ -75,7 +75,7 @@
 
 ---
 
-## TODO 5 — LOCKED
+## TODO 5 — DONE
 **Goal:** Implement `components/OrderLog.tsx`
 **Tasks:**
 - Mark as `"use client"`
@@ -92,7 +92,7 @@
 
 ---
 
-## TODO 6 — LOCKED
+## TODO 6 — ACTIVE
 **Goal:** Implement `components/ConnectionStatus.tsx`
 **Tasks:**
 - Mark as `"use client"`
