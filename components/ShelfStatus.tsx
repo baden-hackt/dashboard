@@ -9,7 +9,7 @@ export default function ShelfStatus() {
   useEffect(() => {
     const load = async () => {
       const data = await fetchFillLevels();
-      setLevels(data);
+      setLevels((prev) => (data.length > 0 ? data : prev));
     };
     load();
     const interval = setInterval(load, 5000);

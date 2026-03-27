@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { getCameraFeedUrl } from "@/lib/api";
 
 export default function CameraFeed() {
-  const [timestamp, setTimestamp] = useState(Date.now());
+  const [timestamp, setTimestamp] = useState(0);
 
   useEffect(() => {
+    setTimestamp(Date.now());
     const interval = setInterval(() => {
       setTimestamp(Date.now());
     }, 2000);

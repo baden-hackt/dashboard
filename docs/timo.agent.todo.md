@@ -92,7 +92,7 @@
 
 ---
 
-## TODO 6 — ACTIVE
+## TODO 6 — DONE
 **Goal:** Implement `components/ConnectionStatus.tsx`
 **Tasks:**
 - Mark as `"use client"`
@@ -107,7 +107,7 @@
 
 ---
 
-## TODO 7 — LOCKED
+## TODO 7 — DONE
 **Goal:** Implement `app/globals.css`, `app/layout.tsx`, and `app/page.tsx`
 **Tasks:**
 - `globals.css`: only Tailwind directives (`@tailwind base/components/utilities`), no custom CSS
@@ -124,7 +124,7 @@
 
 ---
 
-## TODO 8 — LOCKED
+## TODO 8 — DONE
 **Goal:** Verify all polling works with mock data
 **Tasks:**
 - Start Person 2's backend (or mock it with a simple server returning test JSON)
@@ -141,7 +141,7 @@
 
 ---
 
-## TODO 9 — LOCKED
+## TODO 9 — DONE
 **Goal:** Verify offline/error handling
 **Tasks:**
 - Stop Person 2's backend while the dashboard is running
@@ -216,3 +216,4 @@
 - Dashboard is live and showing real data from the shelf
 - Physical demo setup is stable and ready for judges
 - Fallback plan tested and confirmed working
+

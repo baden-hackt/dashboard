@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MOCK_MODE } from "@/lib/api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const PRODUCTS_URL = MOCK_MODE ? "/mock/products.json" : `${API_URL}/api/products`;
 
 export default function ConnectionStatus() {
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useState(MOCK_MODE);
 
   useEffect(() => {
     const check = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/products`, { cache: "no-store" });
+        const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
         setConnected(res.ok);
       } catch {
         setConnected(false);
@@ -29,7 +31,11 @@ export default function ConnectionStatus() {
         }`}
       />
       <span className="text-gray-500 dark:text-gray-400">
-        {connected ? `Connected to ${API_URL}` : "Backend offline"}
+        {MOCK_MODE
+          ? "Mock mode enabled (API disabled)"
+          : connected
+            ? `Connected to ${API_URL}`
+            : "Backend offline"}
       </span>
     </div>
   );

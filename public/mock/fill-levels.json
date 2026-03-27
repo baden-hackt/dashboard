@@ -1,0 +1,22 @@
+[
+  {
+    "tag_id": 0,
+    "fill_level": 82,
+    "timestamp": "2026-03-27T12:00:00",
+    "product_id": "MAT-001",
+    "product_name": "Schrauben M8x30",
+    "supplier_name": "Würth AG",
+    "reorder_threshold": 20,
+    "status": "ok"
+  },
+  {
+    "tag_id": 1,
+    "fill_level": 18,
+    "timestamp": "2026-03-27T12:00:00",
+    "product_id": "MAT-002",
+    "product_name": "Unterlegscheiben M8",
+    "supplier_name": "Bossard AG",
+    "reorder_threshold": 20,
+    "status": "low"
+  }
+]
