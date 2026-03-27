@@ -13,7 +13,7 @@
 
 ---
 
-## TODO 1 — LOCKED
+## TODO 1 — DONE
 **Goal:** Scaffold Next.js project and configure environment
 **Tasks:**
 - Run `npx create-next-app@latest dashboard --typescript --tailwind --eslint --app --src-dir=false --import-alias="@/*"`
@@ -27,7 +27,7 @@
 
 ---
 
-## TODO 2 — LOCKED
+## TODO 2 — DONE
 **Goal:** Implement `lib/api.ts`
 **Tasks:**
 - Define `FillLevel` interface with all fields from spec: `tag_id`, `fill_level`, `timestamp`, `product_id`, `product_name`, `supplier_name`, `reorder_threshold`, `status`
@@ -41,7 +41,7 @@
 
 ---
 
-## TODO 3 — LOCKED
+## TODO 3 — DONE
 **Goal:** Implement `components/CameraFeed.tsx`
 **Tasks:**
 - Mark as `"use client"`
@@ -57,7 +57,7 @@
 
 ---
 
-## TODO 4 — LOCKED
+## TODO 4 — ACTIVE
 **Goal:** Implement `components/ShelfStatus.tsx`
 **Tasks:**
 - Mark as `"use client"`
