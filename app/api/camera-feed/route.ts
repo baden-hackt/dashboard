@@ -5,16 +5,19 @@ function normalizeBaseUrl(url: string): string {
 }
 
 function getBackendBaseUrl(): string {
-  const raw =
-    process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:8000";
+  const raw = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:8000";
   return normalizeBaseUrl(raw);
 }
 
 function getProxyHeaders(): HeadersInit | undefined {
   const base = getBackendBaseUrl();
-  if (/\.ngrok(-free)?\.app$|\.ngrok(-free)?\.dev$|\.ngrok\.io$/i.test(base)) {
+  let host = "";
+  try {
+    host = new URL(base).host;
+  } catch {
+    host = base;
+  }
+  if (/\.ngrok(-free)?\.app$|\.ngrok(-free)?\.dev$|\.ngrok\.io$/i.test(host)) {
     return { "ngrok-skip-browser-warning": "true" };
   }
   return undefined;
@@ -35,12 +38,15 @@ export async function GET(request: Request) {
       headers: getProxyHeaders(),
     });
 
-    const contentType = upstream.headers.get("content-type");
+    const buffer = await upstream.arrayBuffer();
+    const contentType = upstream.headers.get("content-type") || "application/octet-stream";
     const headers = new Headers();
-    if (contentType) headers.set("content-type", contentType);
-    headers.set("cache-control", "no-store");
+    headers.set("content-type", contentType);
+    headers.set("cache-control", "no-cache, no-store, must-revalidate");
+    headers.set("pragma", "no-cache");
+    headers.set("expires", "0");
 
-    return new NextResponse(upstream.body, {
+    return new Response(buffer, {
       status: upstream.status,
       headers,
     });
