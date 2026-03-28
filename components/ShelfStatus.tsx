@@ -2,12 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { fetchFillLevels, FillLevel } from "@/lib/api";
-
-function productRank(productId: string): number {
-  const match = productId.match(/(\d+)\s*$/);
-  if (!match) return Number.MAX_SAFE_INTEGER;
-  return Number(match[1]);
-}
+import { sortFillLevelsByProductId } from "@/lib/shelfOrder";
 
 export default function ShelfStatus() {
   const [levels, setLevels] = useState<FillLevel[]>([]);
@@ -31,11 +26,7 @@ export default function ShelfStatus() {
   }, []);
 
   const sortedLevels = useMemo(() => {
-    return [...levels].sort((a, b) => {
-      const rankDiff = productRank(a.product_id) - productRank(b.product_id);
-      if (rankDiff !== 0) return rankDiff;
-      return a.product_id.localeCompare(b.product_id);
-    });
+    return sortFillLevelsByProductId(levels);
   }, [levels]);
 
   const getStatusColor = (status: string) => {
