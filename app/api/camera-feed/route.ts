@@ -4,19 +4,26 @@ function normalizeBaseUrl(url: string): string {
   return url.trim().replace(/\/+$/, "");
 }
 
-function getBackendBaseUrl(): string {
+function getBackendBaseUrl(): URL | null {
   const raw = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || "http://localhost:8000";
-  return normalizeBaseUrl(raw);
+  const normalized = normalizeBaseUrl(raw);
+
+  try {
+    const url = new URL(normalized);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return null;
+    }
+    return url;
+  } catch {
+    return null;
+  }
 }
 
 function getProxyHeaders(): HeadersInit | undefined {
   const base = getBackendBaseUrl();
-  let host = "";
-  try {
-    host = new URL(base).host;
-  } catch {
-    host = base;
-  }
+  if (!base) return undefined;
+
+  const host = base.host;
   if (/\.ngrok(-free)?\.app$|\.ngrok(-free)?\.dev$|\.ngrok\.io$/i.test(host)) {
     return { "ngrok-skip-browser-warning": "true" };
   }
@@ -26,16 +33,28 @@ function getProxyHeaders(): HeadersInit | undefined {
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const backendUrl = new URL(`${getBackendBaseUrl()}/api/camera-feed`);
+  const base = getBackendBaseUrl();
+  if (!base) {
+    return NextResponse.json(
+      { detail: "Backend URL misconfigured (NEXT_PUBLIC_BACKEND_BASE_URL)." },
+      { status: 500 },
+    );
+  }
+
+  const backendUrl = new URL("/api/camera-feed", base);
   const incoming = new URL(request.url);
   const t = incoming.searchParams.get("t");
   if (t) backendUrl.searchParams.set("t", t);
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
 
   try {
     const upstream = await fetch(backendUrl.toString(), {
       method: "GET",
       cache: "no-store",
       headers: getProxyHeaders(),
+      signal: controller.signal,
     });
 
     const buffer = await upstream.arrayBuffer();
@@ -52,5 +71,7 @@ export async function GET(request: Request) {
     });
   } catch {
     return NextResponse.json({ detail: "Backend offline" }, { status: 503 });
+  } finally {
+    clearTimeout(timeout);
   }
 }
