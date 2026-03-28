@@ -1,20 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchFillLevels, FillLevel } from "@/lib/api";
+
+function productRank(productId: string): number {
+  const match = productId.match(/(\d+)\s*$/);
+  if (!match) return Number.MAX_SAFE_INTEGER;
+  return Number(match[1]);
+}
 
 export default function ShelfStatus() {
   const [levels, setLevels] = useState<FillLevel[]>([]);
 
   useEffect(() => {
+    let inFlight = false;
+
     const load = async () => {
-      const data = await fetchFillLevels();
-      setLevels((prev) => (data.length > 0 ? data : prev));
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const data = await fetchFillLevels();
+        setLevels((prev) => (data.length > 0 ? data : prev));
+      } finally {
+        inFlight = false;
+      }
     };
     load();
-    const interval = setInterval(load, 5000);
+    const interval = setInterval(load, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const sortedLevels = useMemo(() => {
+    return [...levels].sort((a, b) => {
+      const rankDiff = productRank(a.product_id) - productRank(b.product_id);
+      if (rankDiff !== 0) return rankDiff;
+      return a.product_id.localeCompare(b.product_id);
+    });
+  }, [levels]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,7 +77,7 @@ export default function ShelfStatus() {
     }
   };
 
-  if (levels.length === 0) {
+  if (sortedLevels.length === 0) {
     return (
       <div>
         <h2 className="text-lg font-semibold mb-2">Shelf status</h2>
@@ -68,7 +90,7 @@ export default function ShelfStatus() {
     <div>
       <h2 className="text-lg font-semibold mb-3">Shelf status</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {levels.map((level) => (
+        {sortedLevels.map((level) => (
           <div
             key={level.tag_id}
             className={`rounded-lg border-2 p-3 ${getStatusColor(level.status)}`}

@@ -7,13 +7,32 @@ export default function OrderLog() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
+    let inFlight = false;
+
     const load = async () => {
-      const data = await fetchOrders();
-      setOrders(data);
+      if (inFlight) return;
+      inFlight = true;
+      try {
+        const data = await fetchOrders();
+        setOrders((prev) => (data.length > 0 ? data : prev));
+      } finally {
+        inFlight = false;
+      }
     };
+
+    const onVisibilityOrFocus = () => {
+      if (!document.hidden) void load();
+    };
+
     load();
-    const interval = setInterval(load, 10000);
-    return () => clearInterval(interval);
+    const interval = setInterval(load, 500);
+    document.addEventListener("visibilitychange", onVisibilityOrFocus);
+    window.addEventListener("focus", onVisibilityOrFocus);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityOrFocus);
+      window.removeEventListener("focus", onVisibilityOrFocus);
+    };
   }, []);
 
   const getStatusBadge = (status: string) => {

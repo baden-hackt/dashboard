@@ -10,7 +10,7 @@ export default function CameraFeed() {
     setTimestamp(Date.now());
     const interval = setInterval(() => {
       setTimestamp(Date.now());
-    }, 2000);
+    }, 500);
     return () => clearInterval(interval);
   }, []);
 
