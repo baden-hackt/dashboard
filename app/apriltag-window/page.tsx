@@ -52,7 +52,7 @@ export default function ApriltagWindowPage() {
         </button>
       </section>
 
-      <FloatingTabs active="apriltag" />
+      <FloatingTabs active="products" />
     </main>
   );
 }
